@@ -105,7 +105,31 @@ we called the catalog service directly
 
 
 Port-forward the webapp deployment to view the the UI
-kubectl port-forward deploy/webapp --address 0.0.0.0 8080:8080
+
+`kubectl port-forward deploy/webapp --address 0.0.0.0 8080:8080`
 
 go to the browser and view the UI
-http://VM-public-ip:8080
+`http://VM-public-ip:8080`
+
+### Allowing External traffic into the cluster using istio ingress gateway to expose our webapp service###
+
+`kubectl apply -f App-Deployment-with-Istio/Deployment/gateway.yml`
+
+port forwwarding  the istio-ingressgateway deployment
+
+`kubectl port-forward deploy/istio-ingressgateway -n istio-system --address 0.0.0.0 8080:8080`
+
+Verify if your gateway has a route
+
+`istioctl proxy-config routes \
+deploy/istio-ingressgateway.istio-system`
+
+### Istio observability features
+### Grafana
+port-forward grafana service
+
+`kubectl port-forward svc/grafana --address 0.0.0.0 3000:3000 -n istio-system`
+
+view the Grafana UI in the browser
+http://VM-public-ip:3000
+
