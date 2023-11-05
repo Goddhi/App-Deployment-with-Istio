@@ -131,5 +131,5 @@ port-forward grafana service
 `kubectl port-forward svc/grafana --address 0.0.0.0 3000:3000 -n istio-system`
 
 view the Grafana UI in the browser
-http://VM-public-ip:3000
+`http://VM-public-ip:3000`
 
