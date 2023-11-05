@@ -23,7 +23,7 @@ spec:
 ---
 
 apiVersion: apps/v1
-kind: Deoloyment
+kind: Deployment
 metadata:
   labels:
     app: catalog
@@ -40,7 +40,7 @@ spec:
       labels:
         app: catalog
         version: v1
-    spec:
+    spec: 
       serviceAccountName: catalog
       containers:
       - env:
@@ -49,11 +49,11 @@ spec:
             fieldRef:
               fieldPath: metadata.namespace
         image: istioinaction/catalog:latest
-        imagePullPolicy: ifNotPresent
+        imagePullPolicy: IfNotPresent
         name: catalog
-        ports: 
+        ports:
         - containerPort: 3000
           name: http
           protocol: TCP
         securityContext:
-           priviledged: false   
+          privileged: false

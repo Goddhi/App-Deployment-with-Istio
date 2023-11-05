@@ -49,3 +49,17 @@ through the mesh
 **switch from default namespace to istio-deployment namespace**
 kubectl config set-context $(kubectl config current-context) --namespace=istio-deployment
 
+**Clone the repo below***
+`git clone https://github.com/Goddhi/App-Deployment-with-Istio.git`
+
+**inject the Istio service proxy so that this service can participate in the service mesh**
+
+`istioctl kube-inject -f App-Deployment-with-Istio/Deployment/catalog.yml `
+
+The istioctl kube-inject command takes a Kubernetes resource file and enriches
+it with the sidecar deployment of the Istio service proxy and a few additional compo-
+nents
+
+To enable automatic injection, we label the istioinaction namespace with
+
+`kubectl label namespace istio-deployment istio-inject=enabled`
