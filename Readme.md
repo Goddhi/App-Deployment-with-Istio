@@ -63,3 +63,49 @@ nents
 To enable automatic injection, we label the istioinaction namespace with
 
 `kubectl label namespace istio-deployment istio-inject=enabled`
+
+**create the catalog deployment:**
+
+`kubectl apply -f App-Deployment-with-Istio/Deployment/catalog.yml`
+
+**RUn kubectl get pods to  see pods**
+observe under 'READY' it shows 2/2 it means to containers are running inside the pod the containers are:
+the application container
+the side-contianer (envoy service proxy)
+
+Query the catalog service from within the cluster with the hostname catalog.istio-deployment. to verify everythin is up and running
+
+` kubectl run -i -n default --rm --restart=Never dummy \
+--image=curlimages/curl --command -- \
+sh -c 'curl -s http://catalog.istio-deployment/items/1' `
+
+Next we deploy the webapp service, which aggregates the data from the other services
+and displays it visually in the browser. This service also exposes an API that ends up
+calling the catalog service, which we just deployed and verified. This means webapp is
+like a frontend of the other backend services:
+
+`kubectl apply -f App-Deployment-with-Istio/Deployment/webapp.yml`
+
+verify the number of pods
+`kubectl get pods`
+
+verify if the webapp service is working perfectly
+
+```
+kubectl run -i -n default --rm --restart=Never dummy \
+--image=curlimages/curl --command -- \
+sh -c 'curl -s http://webapp.istio-deployment/items/1' 
+
+```
+kubectl get pod webapp-854656db8f-68b2k --template='{{(index (index .spec.containers 0).ports 0).containerPort}}{{"\n"}}'
+
+
+command completes correctly, you should see the same JSON response as when
+we called the catalog service directly
+
+
+Port-forward the webapp deployment to view the the UI
+kubectl port-forward deploy/webapp --address 0.0.0.0 8080:8080
+
+go to the browser and view the UI
+http://VM-public-ip:8080
