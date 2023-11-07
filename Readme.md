@@ -133,3 +133,5 @@ port-forward grafana service
 view the Grafana UI in the browser
 `http://VM-public-ip:3000`
 
+### ANotehr method to configure envoy proxy
+kubectl label namespace default istio-injection=enabled
