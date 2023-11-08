@@ -2,13 +2,18 @@
 ### Deployed Micro-Services Appliction into K8S Cluster and using Istio to get Telementary of each services.
 ###  Requirements 
 Minikube 
+6 CPUs and 8GB memory VM
 
-### Possible error has a result of not starting minikube
+####  Possible error has a result of not starting minikube
 Error: failed to get the Kubernetes version: Get "https://192.168.49.2:8443/version?timeout=5s": dial tcp 192.168.49.2:8443: connect: no route to host
+
 #### Resolve issue
-Minikube start
--- Ensure to Grant permission to all users to use docker daemon
+-- Ensure to Grant permission to all users to use docker daemon <>br</>
 `sudo chmod 777 /var/run/docker.sock`
+
+### Start Minikube
+
+`Minikube start --cpus 6 --memory 8000`
 
 ### Istio Installation
 `curl -L https://istio.io/downloadIstio | sh -`
@@ -31,7 +36,8 @@ Install some necesary addons/components needed for istio control-plane
 `cd istio-1.19.3`
 `kubectl apply -f samples/addons`
 
-verify these components are installed 
+verify the components/addons below are installed 
+
 - **prometheus**: Collects and stores the
 generated metrics as
 time-series data
@@ -45,8 +51,10 @@ by Prometheus
 to visualize request flow
 through the mesh 
 
+`kubectl get pods -n istio-system`
 
-### Deploying your first application in the service mesh
+
+### Deploying Mircoservces into K8S Cluster
 
 **switch from default namespace to istio-deployment namespace**
 kubectl config set-context $(kubectl config current-context) --namespace=istio-deployment
@@ -56,7 +64,7 @@ kubectl config set-context $(kubectl config current-context) --namespace=istio-d
 
 **inject the Istio service proxy so that this service can participate in the service mesh**
 
-`istioctl kube-inject -f App-Deployment-with-Istio/Deployment/catalog.yml `
+`istioctl kube-inject -f Deployment/microservices-deployment.yml `
 
 The istioctl kube-inject command takes a Kubernetes resource file and enriches
 it with the sidecar deployment of the Istio service proxy and a few additional compo-
@@ -68,9 +76,11 @@ To enable automatic injection, we label the istioinaction namespace with
 
 **create the catalog deployment:**
 
-`kubectl apply -f App-Deployment-with-Istio/Deployment/catalog.yml`
+`kubectl apply -f Deployment/miroservices-deployment.yml`
 
-**RUn kubectl get pods to  see pods**
+**Run kubectl get pods to  see pods**
+`kubectl get pods`
+
 observe under 'READY' it shows 2/2 it means to containers are running inside the pod the containers are:
 the application container
 the side-contianer (envoy service proxy)
@@ -135,8 +145,7 @@ port-forward grafana service
 view the Grafana UI in the browser
 `http://VM-public-ip:3000`
 
-### Another method to configure envoy proxy
-kubectl label namespace default istio-injection=enabled
+
 
 while true; do curl http://emailservice.default.svc.cluster.local:8080 .5; done
 
