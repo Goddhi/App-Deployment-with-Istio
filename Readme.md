@@ -1,4 +1,6 @@
-Requirements 
+
+### Deployed Micro-Services Appliction into K8S Cluster and using Istio to get Telementary of each services.
+###  Requirements 
 Minikube 
 
 ### Possible error has a result of not starting minikube
@@ -133,5 +135,10 @@ port-forward grafana service
 view the Grafana UI in the browser
 `http://VM-public-ip:3000`
 
-### ANotehr method to configure envoy proxy
+### Another method to configure envoy proxy
 kubectl label namespace default istio-injection=enabled
+
+while true; do curl http://emailservice.default.svc.cluster.local:8080 .5; done
+
+
+while true; do curl http:/./localhost/api/emailservice; sleep .5; done
