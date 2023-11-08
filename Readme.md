@@ -73,8 +73,7 @@ nents
 To enable automatic injection, we label the istioinaction namespace with
 
 `kubectl label namespace istio-deployment istio-inject=enabled`
-
-**create the catalog deployment:**
+**Deploy the Microservices Application**
 
 `kubectl apply -f Deployment/miroservices-deployment.yml`
 
@@ -85,49 +84,19 @@ observe under 'READY' it shows 2/2 it means to containers are running inside the
 the application container
 the side-contianer (envoy service proxy)
 
-Query the catalog service from within the cluster with the hostname catalog.istio-deployment. to verify everythin is up and running
 
-` kubectl run -i -n default --rm --restart=Never dummy \
---image=curlimages/curl --command -- \
-sh -c 'curl -s http://catalog.istio-deployment/items/1' `
+Port-forward the emailservice deployment to view the the UI
 
-Next we deploy the webapp service, which aggregates the data from the other services
-and displays it visually in the browser. This service also exposes an API that ends up
-calling the catalog service, which we just deployed and verified. This means webapp is
-like a frontend of the other backend services:
-
-`kubectl apply -f App-Deployment-with-Istio/Deployment/webapp.yml`
-
-verify the number of pods
-`kubectl get pods`
-
-verify if the webapp service is working perfectly
-
-```
-kubectl run -i -n default --rm --restart=Never dummy \
---image=curlimages/curl --command -- \
-sh -c 'curl -s http://webapp.istio-deployment/items/1' 
-
-```
-kubectl get pod webapp-854656db8f-68b2k --template='{{(index (index .spec.containers 0).ports 0).containerPort}}{{"\n"}}'
-
-
-command completes correctly, you should see the same JSON response as when
-we called the catalog service directly
-
-
-Port-forward the webapp deployment to view the the UI
-
-`kubectl port-forward deploy/webapp --address 0.0.0.0 8080:8080`
+`kubectl port-forward deploy/emailservice --address 0.0.0.0 8080:8080`
 
 go to the browser and view the UI
 `http://VM-public-ip:8080`
 
 ### Allowing External traffic into the cluster using istio ingress gateway to expose our webapp service###
 
-`kubectl apply -f App-Deployment-with-Istio/Deployment/gateway.yml`
+`kubectl apply -f gateway.yml`
 
-port forwwarding  the istio-ingressgateway deployment
+port forwarding  the istio-ingressgateway deployment
 
 `kubectl port-forward deploy/istio-ingressgateway -n istio-system --address 0.0.0.0 8080:8080`
 
@@ -136,8 +105,13 @@ Verify if your gateway has a route
 `istioctl proxy-config routes \
 deploy/istio-ingressgateway.istio-system`
 
+
+## Displaying Telementary of each services
+
 ### Istio observability features
 ### Grafana
+### Kiali
+
 port-forward grafana service
 
 `kubectl port-forward svc/grafana --address 0.0.0.0 3000:3000 -n istio-system`
@@ -145,9 +119,21 @@ port-forward grafana service
 view the Grafana UI in the browser
 `http://VM-public-ip:3000`
 
+Metric Visualization of the Microservices Application 
+![grafana-image](image1.png)
+
+port-forward kiali service
+
+`kubectl port-forward svc/kiali --address 0.0.0.0 20001:20001 -n istio-system`
+
+view the Kiali UI in the browser
+`http://VM-public-ip:20001`
+
+View of Microservices Application health status
+
+![kiali image](image2.png)
 
 
-while true; do curl http://emailservice.default.svc.cluster.local:8080 .5; done
+Architectural Diagram of Th Micoservices
 
-
-while true; do curl http:/./localhost/api/emailservice; sleep .5; done
+![kiali image](image3.jpg)
