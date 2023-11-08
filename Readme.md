@@ -8,7 +8,7 @@ Minikube
 Error: failed to get the Kubernetes version: Get "https://192.168.49.2:8443/version?timeout=5s": dial tcp 192.168.49.2:8443: connect: no route to host
 
 #### Resolve issue
--- Ensure to Grant permission to all users to use docker daemon <>br</>
+-- Ensure to Grant permission to all users to use docker daemon <br>
 `sudo chmod 777 /var/run/docker.sock`
 
 ### Start Minikube
